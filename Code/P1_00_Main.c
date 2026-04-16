@@ -23,9 +23,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "P1_01_Functions.h"
 
 int main(void) {
-    int nproc = sysconf(_SC_NPROCESSORS_ONLN); // Detecta el numero de procesadores dentro del equipo (Funciona en Linux / Mac ^.^)
-    printf("%i", nproc);
+    puts("Bienvenido al gestor de procesos de DiegOS");
+    int Hilos = determinarHilos();
+    printf("Esta computadora cuenta con %i hilos de trabajo utilizables\n", Hilos);
+    int a=0, *ptr_a=&a;
+    printf("%p",ptr_a);
     return 0;
 }

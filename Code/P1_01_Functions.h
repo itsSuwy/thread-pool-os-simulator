@@ -15,6 +15,7 @@ struct process { // <- Esto es una cajita, se supone que aqui solo tiene que viv
 struct thread { // El hilo que almacenara la cola
     int id;
     int n_process;
+    char name[20];
     struct thread *sig;
     struct process *inicio; // El primer proceso
     struct process *fin; // El ultimo proceso

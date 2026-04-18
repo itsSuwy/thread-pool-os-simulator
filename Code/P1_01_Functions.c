@@ -41,12 +41,21 @@ struct thread *Crear_Hilos(int hilos) {
     }
     Hilo_Creado->id=hilos;
     Hilo_Creado->n_process=0;
+    sprintf(Hilo_Creado->name, "%p", (void*)Hilo_Creado); // Para que cada hilo cuente con un nombre propio
     Hilo_Creado->inicio=NULL;
     Hilo_Creado->fin=NULL;
     return Hilo_Creado;
 }
 
-
+/*void Asignar_Nombre(struct cpu *CPU){
+    if (!CPU) {
+        puts("Error de memoria\nCerrando el programa por seguridad");
+        exit(-1);
+    }
+    struct thread *aux = CPU->inicio;
+    sprintf(Hilo_creado->name, "%p", (void*)Hilo_Creado);
+}
+*/
 
 /*struct thread *asignarMemoria(int dato) {
     struct thread *hilo = (struct thread *)calloc(1,sizeof(struct thread));

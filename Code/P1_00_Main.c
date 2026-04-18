@@ -33,10 +33,9 @@ int main(void) {
 
     puts("Bienvenido al gestor de procesos de DiegOS");
     puts("Escaneando los hilos reales de este equipo...");
-    int Hilos_reales = determinarHilos();
+        int Hilos_reales = determinarHilos();
     printf("Esta computadora cuenta con %i hilos de trabajo utilizables\n", Hilos_reales);
-    int a=0, *ptr_a=&a;
-    printf("%p",ptr_a);
+        Crear_CPU(CPU,Hilos_reales);
 
     free(CPU);
     return 0;

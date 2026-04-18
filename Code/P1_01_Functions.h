@@ -26,7 +26,7 @@ struct cpu { // El cpu que almacena los hilos
 };
 
 int determinarHilos(void);
-void Crear_CPU(struct cpu *CPU, int hilos)
+void Crear_CPU(struct cpu *CPU, int hilos);
 struct thread *Crear_Hilos(int hilos);
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

@@ -29,12 +29,15 @@
 
 int main(void) {
     //struct process procesos;
-    struct cpu CPU;
+    struct cpu *CPU = (struct cpu*)calloc(1,sizeof(struct cpu));
 
     puts("Bienvenido al gestor de procesos de DiegOS");
+    puts("Escaneando los hilos reales de este equipo...");
     int Hilos_reales = determinarHilos();
     printf("Esta computadora cuenta con %i hilos de trabajo utilizables\n", Hilos_reales);
     int a=0, *ptr_a=&a;
     printf("%p",ptr_a);
+
+    free(CPU);
     return 0;
 }

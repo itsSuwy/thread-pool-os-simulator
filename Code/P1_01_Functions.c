@@ -14,9 +14,9 @@ int determinarHilos(void) {
     int hilos = sysconf(_SC_NPROCESSORS_ONLN); // Se calcula el numero de Hilos reales con el que cuenta el sistema operativo que ejecute el codigo
     return hilos;
 }
-void Crear_CPU(struct cpu *CPU, int hilos) {
+void Crear_CPU(struct cpu *CPU, int hilos) { // Funcion para construir la CPU
     hilos--;
-    if (!CPU) { // Nos quedamos sin memoria
+    if (!CPU) {
         puts("Error de memoria\nCerrando el programa por seguridad");
         exit(-1);
     }
@@ -24,7 +24,7 @@ void Crear_CPU(struct cpu *CPU, int hilos) {
         return;
     }
     struct thread *hilo_generado= Crear_Hilos(hilos); // Se genera un hilo
-    if (CPU->inicio== NULL && CPU->fin==NULL) { // Si apuntan al mismo lugar (La cola esta vacia)
+    if (CPU->inicio== NULL && CPU->fin==NULL) { // Si apuntan a un NULL (La cola esta vacia)
         CPU->inicio=hilo_generado;
         CPU->fin=hilo_generado;
     }else {
@@ -43,7 +43,7 @@ struct thread *Crear_Hilos(int hilos) {
     Hilo_Creado->n_process=0;
     Hilo_Creado->inicio=NULL;
     Hilo_Creado->fin=NULL;
-    Crear_Hilos(hilos);
+    return Hilo_Creado;
 }
 
 

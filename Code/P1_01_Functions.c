@@ -46,33 +46,3 @@ struct thread *Crear_Hilos(int hilos) {
     Hilo_Creado->fin=NULL;
     return Hilo_Creado;
 }
-
-/*void Asignar_Nombre(struct cpu *CPU){
-    if (!CPU) {
-        puts("Error de memoria\nCerrando el programa por seguridad");
-        exit(-1);
-    }
-    struct thread *aux = CPU->inicio;
-    sprintf(Hilo_creado->name, "%p", (void*)Hilo_Creado);
-}
-*/
-
-/*struct thread *asignarMemoria(int dato) {
-    struct thread *hilo = (struct thread *)calloc(1,sizeof(struct thread));
-    if (!hilo)
-        return NULL;
-    hilo->sig = NULL;
-    return hilo;
-}
-
-void asignacionHilos(struct thread *hilo, int n) {
-    if (n<0) {
-        return;
-    }else{
-        struct thread *hilo = asignarMemoria(int n);
-        hilo->id=n--;
-        int a = rand()%10000 + 1, *ptr_aux=&a;
-        sprintf(hilo->name, "%p", (void*)ptr_aux);
-    }
-}
-*/

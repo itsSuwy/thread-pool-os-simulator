@@ -7,11 +7,10 @@
 
 struct process { // <- Esto es una cajita, se supone que aqui solo tiene que vivir el proceso que entre
     int id;
-    char name[20];
+    char name[15];
     bool urgent;
     struct dato *sig;
 };
-
 struct thread { // El hilo que almacenara la cola
     int id;
     int n_process;
@@ -29,5 +28,7 @@ struct cpu { // El cpu que almacena los hilos
 int determinarHilos(void);
 void Crear_CPU(struct cpu *CPU, int hilos);
 struct thread *Crear_Hilos(int hilos);
-
+void impresion(struct thread *Hilo);
+int procesado_de_entrada(char input);
+void limpiando_buffer(void);
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

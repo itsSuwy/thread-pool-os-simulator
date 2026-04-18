@@ -42,7 +42,27 @@ struct thread *Crear_Hilos(int hilos) {
     Hilo_Creado->id=hilos;
     Hilo_Creado->n_process=0;
     sprintf(Hilo_Creado->name, "%p", (void*)Hilo_Creado); // Para que cada hilo cuente con un nombre propio
+    Hilo_Creado->sig=NULL;
     Hilo_Creado->inicio=NULL;
     Hilo_Creado->fin=NULL;
     return Hilo_Creado;
+}
+void impresion(struct thread *Hilo){
+    if (!Hilo) {
+        puts("CPU vacia");
+        return;
+    }
+    printf("ID asignado: %i\n",Hilo->id);
+    printf("Cantidad de procesos asignados: %i\n",Hilo->n_process);
+    printf("Nombre de hardware del hilo: %s\n", Hilo->name);
+    printf("\n");
+    return impresion(Hilo->sig);
+}
+int procesado_de_entrada(char input) {
+    int respuesta=0;
+    respuesta = (int)input;
+    return respuesta;
+}
+void limpiando_buffer(void) {
+    while (getchar() !='\n'){}
 }

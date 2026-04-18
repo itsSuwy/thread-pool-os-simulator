@@ -23,12 +23,14 @@ void Crear_CPU(struct cpu *CPU, int hilos) {
     if (hilos<0) { // Cuando ya no hay mas hilos que sacar
         return;
     }
-    struct thread *hilo_generado= Crear_Hilos(hilos);
-    if (CPU->inicio==CPU->fin) { // Si apuntan al mismo lugar (La cola esta vacia)
+    struct thread *hilo_generado= Crear_Hilos(hilos); // Se genera un hilo
+    if (CPU->inicio== NULL && CPU->fin==NULL) { // Si apuntan al mismo lugar (La cola esta vacia)
         CPU->inicio=hilo_generado;
         CPU->fin=hilo_generado;
     }else {
+        struct thread *aux= CPU->fin;
         CPU->fin=hilo_generado;
+        aux->sig=CPU->fin;
     }
     return Crear_CPU(CPU, hilos);
 }

@@ -14,6 +14,7 @@ int determinarHilos(void) {
     int hilos = sysconf(_SC_NPROCESSORS_ONLN); // Se calcula el numero de Hilos reales con el que cuenta el sistema operativo que ejecute el codigo
     return hilos;
 }
+
 void Crear_CPU(struct cpu *CPU, int hilos) { // Funcion para construir la CPU
     hilos--;
     if (!CPU) {
@@ -34,6 +35,7 @@ void Crear_CPU(struct cpu *CPU, int hilos) { // Funcion para construir la CPU
     }
     return Crear_CPU(CPU, hilos);
 }
+
 struct thread *Crear_Hilos(int hilos) {
     struct thread *Hilo_Creado = (struct thread*)calloc(1,sizeof(struct thread));
     if (!Hilo_Creado) {
@@ -47,6 +49,28 @@ struct thread *Crear_Hilos(int hilos) {
     Hilo_Creado->fin=NULL;
     return Hilo_Creado;
 }
+
+/*void ordenar_CPU(struct cpu *CPU) {
+    if (!CPU->inicio->sig){
+        CPU->inicio = CPU->fin;
+        CPU->fin = NULL;
+        return;
+    }
+    struct thread *aux = CPU->inicio;
+    CPU->inicio=CPU->inicio->sig;
+    ordenar_CPU(CPU);
+    ordenar_CPU_auxiliar(CPU, aux);
+}
+void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo) {
+    if (!CPU->inicio->sig) {
+
+        return;
+    }else{
+
+    }
+}
+*/
+
 void impresion(struct thread *Hilo){
     if (!Hilo) {
         puts("CPU vacia");
@@ -58,11 +82,13 @@ void impresion(struct thread *Hilo){
     printf("\n");
     return impresion(Hilo->sig);
 }
+
 int procesado_de_entrada(char input) {
     int respuesta=0;
     respuesta = (int)input;
     return respuesta;
 }
+
 void limpiando_buffer(void) {
     while (getchar() !='\n'){}
 }

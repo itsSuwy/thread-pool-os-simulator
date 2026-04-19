@@ -31,6 +31,6 @@ struct thread *Crear_Hilos(int hilos);
 void impresion(struct thread *Hilo);
 int procesado_de_entrada(char input);
 void limpiando_buffer(void);
-void ordenar_CPU(struct cpu *CPU);
-void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo);
+void ordenar_CPU(struct cpu *CPU); // WIP
+void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo); // WIP
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

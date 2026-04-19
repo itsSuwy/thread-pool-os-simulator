@@ -50,7 +50,8 @@ struct thread *Crear_Hilos(int hilos) {
     return Hilo_Creado;
 }
 
-/*void ordenar_CPU(struct cpu *CPU) {
+/* There is a bug ahead!
+ *void ordenar_CPU(struct cpu *CPU) {
     if (!CPU->inicio->sig){
         CPU->inicio = CPU->fin;
         CPU->fin = NULL;

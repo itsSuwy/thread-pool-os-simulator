@@ -3,6 +3,7 @@
 //
 #include <unistd.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,10 +61,33 @@ char *nombre(void) {
         puts("Error de memoria!");
         exit(-1);
     }else {
-        puts("Ingrese el nombre del dato");
-            scanf( "%19s", name);
+        printf("Ingrese el nombre del dato: ");
+            scanf( " %19s", name);
         limpiando_buffer();
+        printf("\n");
         return name;
+    }
+}
+
+bool designar_importancia(void){
+    char respuesta='\0';
+    while (1) {
+        printf("Es urgente? [Y/N]: ");
+        scanf(" %c", &respuesta);
+            limpiando_buffer();
+        char modificado = toupper(respuesta);
+        if (modificado == 'Y') {
+            return true;
+        }
+        if (modificado == 'N') {
+            return false;
+        }
+        else{
+            puts("Entrada de datos invalida");
+            puts("Vuelva a registrar su respuesta");
+            printf("\n");
+            continue;
+        }
     }
 }
 

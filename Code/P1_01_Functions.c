@@ -77,9 +77,11 @@ bool designar_importancia(void){
             limpiando_buffer();
         char modificado = toupper(respuesta);
         if (modificado == 'Y') {
+            printf("\n");
             return true;
         }
         if (modificado == 'N') {
+            printf("\n");
             return false;
         }
         else{
@@ -91,6 +93,19 @@ bool designar_importancia(void){
     }
 }
 
+void proceso_empaquetado(char *name, bool urgency){
+    struct process *proceso = (struct process *)calloc(1,sizeof(struct process));
+    if (!proceso) {
+        puts("Error critico de memoria");
+        puts("Cerrando el programa por seguridad");
+        exit(-1);
+    }
+    proceso->name=name;
+    sprintf(proceso->hardware, "%p", (void*)proceso);
+    proceso->urgency=urgency;
+
+    //free(proceso); // Dont forget to remove
+}
 
 void impresion(struct thread *Hilo){
     if (!Hilo) {

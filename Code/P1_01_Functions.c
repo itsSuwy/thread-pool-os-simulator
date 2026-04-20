@@ -93,7 +93,7 @@ bool designar_importancia(void){
     }
 }
 
-void proceso_empaquetado(char *name, bool urgency){
+struct process * proceso_empaquetado(char *name, bool urgency){
     struct process *proceso = (struct process *)calloc(1,sizeof(struct process));
     if (!proceso) {
         puts("Error critico de memoria");
@@ -103,9 +103,10 @@ void proceso_empaquetado(char *name, bool urgency){
     proceso->name=name;
     sprintf(proceso->hardware, "%p", (void*)proceso);
     proceso->urgency=urgency;
-
-    free(proceso); // Dont forget to remove
+    return proceso;
 }
+
+
 
 void impresion(struct thread *Hilo){
     if (!Hilo) {

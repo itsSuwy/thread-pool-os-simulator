@@ -35,4 +35,5 @@ void limpiando_buffer(void);
 void ordenar_CPU(struct cpu *CPU); // WIP
 void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo); // WIP
 char *nombre(void);
+bool designar_importancia(void);
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

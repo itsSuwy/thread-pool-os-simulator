@@ -104,7 +104,7 @@ void proceso_empaquetado(char *name, bool urgency){
     sprintf(proceso->hardware, "%p", (void*)proceso);
     proceso->urgency=urgency;
 
-    //free(proceso); // Dont forget to remove
+    free(proceso); // Dont forget to remove
 }
 
 void impresion(struct thread *Hilo){

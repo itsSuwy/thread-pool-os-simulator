@@ -50,27 +50,23 @@ struct thread *Crear_Hilos(int hilos) {
     return Hilo_Creado;
 }
 
-/* There is a bug ahead!
- *void ordenar_CPU(struct cpu *CPU) {
-    if (!CPU->inicio->sig){
-        CPU->inicio = CPU->fin;
-        CPU->fin = NULL;
-        return;
-    }
-    struct thread *aux = CPU->inicio;
-    CPU->inicio=CPU->inicio->sig;
-    ordenar_CPU(CPU);
-    ordenar_CPU_auxiliar(CPU, aux);
+struct process *dato(void){
+
 }
-void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo) {
-    if (!CPU->inicio->sig) {
 
-        return;
-    }else{
-
+char *nombre(void) {
+    char *name = (char *)calloc(20, sizeof(char));
+    if (!name) {
+        puts("Error de memoria!");
+        exit(-1);
+    }else {
+        puts("Ingrese el nombre del dato");
+            scanf( "%19s", name);
+        limpiando_buffer();
+        return name;
     }
 }
-*/
+
 
 void impresion(struct thread *Hilo){
     if (!Hilo) {
@@ -93,3 +89,25 @@ int procesado_de_entrada(char input) {
 void limpiando_buffer(void) {
     while (getchar() !='\n'){}
 }
+
+/* There is a bug ahead!
+void ordenar_CPU(struct cpu *CPU) {
+    if (!CPU->inicio->sig){
+        CPU->inicio = CPU->fin;
+        CPU->fin = NULL;
+        return;
+    }
+    struct thread *aux = CPU->inicio;
+    CPU->inicio=CPU->inicio->sig;
+    ordenar_CPU(CPU);
+    ordenar_CPU_auxiliar(CPU, aux);
+}
+void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo) {
+    if (!CPU->inicio->sig) {
+
+        return;
+    }else{
+
+    }
+}
+*/

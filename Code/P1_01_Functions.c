@@ -93,7 +93,7 @@ bool designar_importancia(void){
     }
 }
 
-struct process * proceso_empaquetado(char *name, bool urgency){
+struct process *proceso_empaquetado(char *name, bool urgency){
     struct process *proceso = (struct process *)calloc(1,sizeof(struct process));
     if (!proceso) {
         puts("Error critico de memoria");
@@ -105,7 +105,74 @@ struct process * proceso_empaquetado(char *name, bool urgency){
     proceso->urgency=urgency;
     return proceso;
 }
+void asignar_hilo(struct thread *hilo_original, struct thread *hilo_auxiliar, struct process *process) {
+    int validacion = busqueda_hilo_libre(hilo_auxiliar,process);
+    if (validacion == 1){
+        struct thread *hilo_menor = hilo_libre(hilo_original,hilo_original);
+        asignacion_proceso_ocupado(hilo_menor,process);
+    }else {
+        return;
+    }
+}
 
+int busqueda_hilo_libre(struct thread *hilo, struct process *process) {
+    if (!hilo) { // Caso base A: Hilos vacios
+        puts("Hilo vacio!");
+
+        return 1;
+    }
+    if (hilo->ocupado==false) { // Caso base B: Hilo desocupado detectado
+        asignacion_proceso(hilo,process);
+        puts("Proceso asignado con exito");
+        return 0;
+    }
+    else{
+        return busqueda_hilo_libre(hilo->sig,process);
+    }
+}
+
+void asignacion_proceso(struct thread *hilo, struct process *process) {
+    if (hilo->ocupado==false) {
+        hilo->inicio=process;
+        hilo->fin=process;
+        hilo->n_process++;
+        process->sig=NULL;
+        process->id=0;
+        return;
+    }
+}
+
+struct thread *hilo_libre(struct thread *hilo_actual, struct thread *hilo_menor){
+    if (!hilo_actual){
+        return hilo_menor;
+    }
+    if (hilo_menor->n_process>hilo_actual->n_process) {
+        hilo_menor=hilo_actual;
+        }
+    return hilo_libre(hilo_actual->sig,hilo_menor);
+}
+
+void asignacion_proceso_ocupado(struct thread *hilo,struct process *process){
+    if (process->urgency==true){
+        process->sig=hilo->inicio;
+        hilo->inicio=process;
+        hilo->n_process++;
+    }else{
+        struct process *aux = busqueda_proceso_final(process);
+        aux->sig=process;
+        process->sig=NULL;
+        hilo->fin=process;
+        hilo->n_process++;
+    }
+}
+
+struct process *busqueda_proceso_final(struct process *process) {
+    if (!process->sig) {
+        return process;
+    }else{
+        return busqueda_proceso_final(process->sig);
+    }
+}
 
 
 void impresion(struct thread *Hilo){

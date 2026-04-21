@@ -42,7 +42,7 @@ struct process *proceso_empaquetado(char *name, bool urgency);
 void busqueda_hilo_libre(struct thread *hilo, struct process *process);
 struct process *busqueda_proceso_final(struct process *process);
 void asignacion_proceso(struct thread *hilo, struct process *process);
-struct thread *hilo_libre(struct thread *hilo_actual, struct thread *hilo_menor)
+struct thread *hilo_libre(struct thread *hilo_actual, struct thread *hilo_menor);
 void asignacion_proceso_ocupado(struct thread *hilo,struct process *process);
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

@@ -16,6 +16,7 @@ struct process { // <- Esto es una cajita, se supone que aqui solo tiene que viv
 struct thread { // El hilo que almacenara la cola
     int id;
     int n_process;
+    bool ocupado;
     char name[20];
     struct thread *sig;
     struct process *inicio; // El primer proceso
@@ -38,5 +39,10 @@ void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo); // WIP
 char *nombre(void);
 bool designar_importancia(void);
 struct process *proceso_empaquetado(char *name, bool urgency);
+void busqueda_hilo_libre(struct thread *hilo, struct process *process);
+struct process *busqueda_proceso_final(struct process *process);
+void asignacion_proceso(struct thread *hilo, struct process *process);
+struct thread *hilo_libre(struct thread *hilo_actual, struct thread *hilo_menor)
+void asignacion_proceso_ocupado(struct thread *hilo,struct process *process);
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

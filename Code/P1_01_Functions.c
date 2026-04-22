@@ -193,6 +193,34 @@ void limpiando_buffer(void) {
     while (getchar() !='\n'){}
 }
 
+void visualizar_procesos(struct thread *hilo){
+    if (!hilo) {
+        puts("~~~Lista de procesos vacia~~~");
+        return;
+    }
+    printf("No. de hilo: %i\n", hilo->id);
+    printf("No. de procesos asignados: %i\n\n", hilo->n_process);
+    extraer_proceso(hilo->inicio);
+    visualizar_procesos(hilo->sig);
+
+}
+void extraer_proceso(struct process *process) {
+    if (!process){
+        printf("\n\n");
+        return;
+    }
+    printf("No. Proceso: %i\n", process->id);
+    printf("Nombre del proceso: %s\n", process->name);
+    printf("Direccion de memoria del proceso %s\n", process->mem_addr);
+    if (process->urgency == true) {
+        puts("Es urgente el proceso");
+    }else {
+        puts("No es urgente el proceso");
+    }
+    printf("\n");
+    extraer_proceso(process->sig);
+}
+
 /* There is a bug ahead!
 void ordenar_CPU(struct cpu *CPU) {
     if (!CPU->inicio->sig){

@@ -45,14 +45,11 @@ struct thread *Crear_Hilos(int hilos) {
     Hilo_Creado->id=hilos;
     Hilo_Creado->n_process=0;
     sprintf(Hilo_Creado->name, "%p", (void*)Hilo_Creado); // Para que cada hilo cuente con un nombre propio
+    Hilo_Creado->ocupado=false;
     Hilo_Creado->sig=NULL;
     Hilo_Creado->inicio=NULL;
     Hilo_Creado->fin=NULL;
     return Hilo_Creado;
-}
-
-struct process *dato(void){
-
 }
 
 char *nombre(void) {
@@ -60,11 +57,10 @@ char *nombre(void) {
     if (!name) {
         puts("Error de memoria!");
         exit(-1);
-    }else {
-        printf("Ingrese el nombre del dato: ");
+    }else{
+        printf("Ingrese el nombre del dato (20 caracteres): ");
             scanf( " %19s", name);
         limpiando_buffer();
-        printf("\n");
         return name;
     }
 }
@@ -77,11 +73,9 @@ bool designar_importancia(void){
             limpiando_buffer();
         char modificado = toupper(respuesta);
         if (modificado == 'Y') {
-            printf("\n");
             return true;
         }
         if (modificado == 'N') {
-            printf("\n");
             return false;
         }
         else{
@@ -95,22 +89,24 @@ bool designar_importancia(void){
 
 struct process *proceso_empaquetado(char *name, bool urgency){
     struct process *proceso = (struct process *)calloc(1,sizeof(struct process));
+    proceso->mem_addr=(char*)calloc(20,sizeof(char));
     if (!proceso) {
         puts("Error critico de memoria");
         puts("Cerrando el programa por seguridad");
         exit(-1);
     }
     proceso->name=name;
-    sprintf(proceso->hardware, "%p", (void*)proceso);
+    sprintf(proceso->mem_addr, "%p", (void*)proceso);
     proceso->urgency=urgency;
     return proceso;
 }
+
 void asignar_hilo(struct thread *hilo_original, struct thread *hilo_auxiliar, struct process *process) {
     int validacion = busqueda_hilo_libre(hilo_auxiliar,process);
     if (validacion == 1){
         struct thread *hilo_menor = hilo_libre(hilo_original,hilo_original);
         asignacion_proceso_ocupado(hilo_menor,process);
-    }else {
+    }else{
         return;
     }
 }
@@ -118,7 +114,6 @@ void asignar_hilo(struct thread *hilo_original, struct thread *hilo_auxiliar, st
 int busqueda_hilo_libre(struct thread *hilo, struct process *process) {
     if (!hilo) { // Caso base A: Hilos vacios
         puts("Hilo vacio!");
-
         return 1;
     }
     if (hilo->ocupado==false) { // Caso base B: Hilo desocupado detectado
@@ -136,6 +131,7 @@ void asignacion_proceso(struct thread *hilo, struct process *process) {
         hilo->inicio=process;
         hilo->fin=process;
         hilo->n_process++;
+        hilo->ocupado=true;
         process->sig=NULL;
         process->id=0;
         return;
@@ -158,7 +154,7 @@ void asignacion_proceso_ocupado(struct thread *hilo,struct process *process){
         hilo->inicio=process;
         hilo->n_process++;
     }else{
-        struct process *aux = busqueda_proceso_final(process);
+        struct process *aux = busqueda_proceso_final(hilo->inicio);
         aux->sig=process;
         process->sig=NULL;
         hilo->fin=process;
@@ -180,7 +176,7 @@ void impresion(struct thread *Hilo){
         puts("CPU vacia");
         return;
     }
-    printf("ID asignado: %i\n",Hilo->id);
+    printf("Numero de Hilo: %i\n",Hilo->id);
     printf("Cantidad de procesos asignados: %i\n",Hilo->n_process);
     printf("Nombre de hardware del hilo: %s\n", Hilo->name);
     printf("\n");

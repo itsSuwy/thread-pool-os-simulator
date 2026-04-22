@@ -8,7 +8,7 @@
 struct process { // <- Esto es una cajita, se supone que aqui solo tiene que vivir el proceso que entre
     int id;
     char *name;
-    char *hardware;
+    char *mem_addr;
     bool urgency;
     struct process *sig;
 };
@@ -39,10 +39,13 @@ void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo); // WIP
 char *nombre(void);
 bool designar_importancia(void);
 struct process *proceso_empaquetado(char *name, bool urgency);
-void busqueda_hilo_libre(struct thread *hilo, struct process *process);
+void asignar_hilo(struct thread *hilo_original, struct thread *hilo_auxiliar, struct process *process);
+int busqueda_hilo_libre(struct thread *hilo, struct process *process);
 struct process *busqueda_proceso_final(struct process *process);
 void asignacion_proceso(struct thread *hilo, struct process *process);
 struct thread *hilo_libre(struct thread *hilo_actual, struct thread *hilo_menor);
 void asignacion_proceso_ocupado(struct thread *hilo,struct process *process);
+void visualizar_procesos(struct thread *hilo);
+void extraer_proceso(struct process *process);
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

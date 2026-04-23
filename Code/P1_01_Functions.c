@@ -219,15 +219,34 @@ void extraer_proceso(struct process *process) {
 
 // ~~~~ Case 4 ~~~~~
 
-struct pila *crear_pila(void){
+void crear_pila(struct cpu *CPU){
     struct pila *output = (struct pila *)calloc(1, sizeof(struct pila));
     if (!output) {
         puts("Error critico de memoria, cerrando el programa por seguridad");
         exit(-1);
     }
-    return output;
+    extraccion_hilos(CPU->inicio,output, CPU->inicio->inicio);
+    return;
 }
+void extraccion_hilos(struct thread *hilo, struct pila *output, struct process *proceso) {
+    if (!proceso) { // Se llego al fin de los procesos
+        if (!hilo->sig) {
+            return; // No hay a donde mas acceder
+        }
+        return extraccion_hilos(hilo->sig, output, hilo->sig->inicio);
+    }
+    push(hilo,output);
+    return extraccion_hilos(hilo,output,hilo->inicio);
 
+}
+void push(struct thread *hilo, struct pila *output){
+    struct process *aux = hilo->inicio;
+    hilo->inicio=hilo->inicio->sig;
+    aux->sig=output->tope;
+    output->tope=aux;
+    output->n_elementos++;
+    hilo->n_process--;
+}
 
 void limpiando_buffer(void) {
     while (getchar() !='\n'){}

@@ -54,7 +54,7 @@ void visualizar_procesos(struct thread *hilo);
 void extraer_proceso(struct process *process);
 void crear_pila(struct cpu *CPU);
 void extraccion_hilos(struct thread *hilo, struct pila *output, struct process *proceso);
-void push(struct process *proceso, struct pila *output);
+void push(struct thread *hilo, struct pila *output);
 
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

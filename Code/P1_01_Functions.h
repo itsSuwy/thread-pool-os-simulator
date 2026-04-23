@@ -28,6 +28,11 @@ struct cpu { // El cpu que almacena los hilos
     struct thread *fin; // El ultimo hilo en entrar
 };
 
+struct pila {
+    struct process *tope;
+    int n_elementos;
+};
+
 int determinarHilos(void);
 void Crear_CPU(struct cpu *CPU, int hilos);
 struct thread *Crear_Hilos(int hilos);

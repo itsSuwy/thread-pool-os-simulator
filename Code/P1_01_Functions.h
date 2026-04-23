@@ -52,5 +52,6 @@ struct thread *hilo_libre(struct thread *hilo_actual, struct thread *hilo_menor)
 void asignacion_proceso_ocupado(struct thread *hilo,struct process *process);
 void visualizar_procesos(struct thread *hilo);
 void extraer_proceso(struct process *process);
+struct pila *crear_pila(void);
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

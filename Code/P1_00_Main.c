@@ -31,7 +31,7 @@
 int main(void) {
     //struct process procesos;
     struct cpu *CPU = (struct cpu*)calloc(1,sizeof(struct cpu));
-    char opcion;
+    char opcion='\0';
 
     puts("Bienvenido al gestor de procesos de DiegOS");
     puts("Escaneando los hilos reales de este equipo...");
@@ -41,7 +41,7 @@ int main(void) {
     puts("CPU simulada creada con exito!");
     while (1) {
         puts("\t\n\n~~~Por favor ingrese una opcion~~~");
-        puts("1) Ingresar un dato");
+        puts("1) Ingresar un proceso");
         puts("2) Visualizar especificaciones de los Hilos");
         puts("3) Visualizar el esquema de procesos actuales");
         puts("4) Ejecutar los procesos actuales y visualizar sus outputs");
@@ -52,14 +52,18 @@ int main(void) {
             int entrada_ascii = procesado_de_entrada(opcion);
         switch (entrada_ascii) {
             case 49: // Valor ascii de 1
-                //code
-                break;
+                char *name = nombre();
+                bool urgencia = designar_importancia();
+                struct process *paquete = proceso_empaquetado(name,urgencia);
+                asignar_hilo(CPU->inicio, CPU->inicio,paquete);
+                continue;
             case 50: // Valor ascii de 2
                 printf("\n");
                 impresion(CPU->inicio);
-                break;
+                continue;
             case 51: // Valor ascii de 3
-                //code
+                printf("\n");
+                visualizar_procesos(CPU->inicio);
                 break;
             case 52: // Valor ascii de 4
                 //code

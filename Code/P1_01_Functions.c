@@ -189,10 +189,6 @@ int procesado_de_entrada(char input) {
     return respuesta;
 }
 
-void limpiando_buffer(void) {
-    while (getchar() !='\n'){}
-}
-
 void visualizar_procesos(struct thread *hilo){
     if (!hilo) {
         puts("~~~Lista de procesos vacia~~~");
@@ -221,6 +217,21 @@ void extraer_proceso(struct process *process) {
     extraer_proceso(process->sig);
 }
 
+// ~~~~ Case 4 ~~~~~
+
+struct pila *crear_pila(void){
+    struct pila *output = (struct pila *)calloc(1, sizeof(struct pila));
+    if (!output) {
+        puts("Error critico de memoria, cerrando el programa por seguridad");
+        exit(-1);
+    }
+    return output;
+}
+
+
+void limpiando_buffer(void) {
+    while (getchar() !='\n'){}
+}
 /* There is a bug ahead!
 void ordenar_CPU(struct cpu *CPU) {
     if (!CPU->inicio->sig){

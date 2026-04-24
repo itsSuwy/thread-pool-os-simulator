@@ -58,6 +58,7 @@ void push(struct thread *hilo, struct pila *output);
 void impresion_pila(struct process *proceso);
 void subir_archivo(struct process *proceso);
 void procesar_archivo(struct process *proceso, FILE *fp);
+void actualizar_hilo(struct thread *hilo);
 
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

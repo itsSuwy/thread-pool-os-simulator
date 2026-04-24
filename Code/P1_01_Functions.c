@@ -232,7 +232,7 @@ void crear_pila(struct cpu *CPU){
     }
     extraccion_hilos(CPU->inicio,output, CPU->inicio->inicio);
     puts("Visualizacion de procesos ejecutados");
-
+    impresion_pila(output->tope);
     return;
 }
 
@@ -271,6 +271,33 @@ void impresion_pila(struct process *proceso){
         puts("Proceso carente de urgencia");
     }
     return impresion_pila(proceso->sig);
+}
+void subir_archivo(struct process *proceso) {
+    FILE *fp = fopen("../logs/log.txt","w");
+    if (!fp) {
+        puts("Error critico de memoria!");
+        exit(-1);
+    }
+    procesar_archivo(proceso,fp);
+    fclose(fp);
+    return;
+}
+
+void procesar_archivo(struct process *proceso, FILE *fp) {
+    if (!proceso) {
+        fprintf(fp,"Todos los procesos han sido anotados con exito\n");
+        return;
+    }
+    fprintf(fp,"ID asignado: %i\n", proceso->id);
+    fprintf(fp,"Nombre del proceso: %s\n", proceso->name);
+    fprintf(fp, "Direccion de memoria asignada: %s\n", proceso->mem_addr);
+    if (proceso->urgency == true) {
+        fprintf(fp,"Proceso marcado como urgente\n");
+    }else{
+        fprintf(fp,"Proceso marcado como no urgente\n");
+    }
+    fprintf(fp,"\n\n");
+    return procesar_archivo(proceso->sig,fp);
 }
 
 void limpiando_buffer(void) {

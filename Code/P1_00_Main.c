@@ -66,7 +66,10 @@ int main(void) {
                 visualizar_procesos(CPU->inicio);
                 break;
             case 52: // Valor ascii de 4
-                //code
+                struct pila *output = crear_pila(CPU);
+                puts("Visualizacion de los procesos ejecutados");
+                impresion_pila(output->tope);
+                subir_archivo(output->tope);
                 break;
             case 53: // Valor ascii de 5
                 free(CPU);

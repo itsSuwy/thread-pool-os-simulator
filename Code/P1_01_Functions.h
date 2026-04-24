@@ -28,6 +28,11 @@ struct cpu { // El cpu que almacena los hilos
     struct thread *fin; // El ultimo hilo en entrar
 };
 
+struct stack {
+    struct process *inicio;
+    struct process *final;
+};
+
 struct pila {
     struct process *tope;
     int n_elementos;

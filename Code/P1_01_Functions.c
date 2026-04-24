@@ -224,16 +224,16 @@ void extraer_proceso(struct process *process) {
 // Proceso de mobilizacion hacia la pila y dejar vacio cada hilo
 
 // 00_Crear una pila
-void crear_pila(struct cpu *CPU){
+struct pila *crear_pila(struct cpu *CPU){
     struct pila *output = (struct pila *)calloc(1, sizeof(struct pila));
     if (!output) {
         puts("Error critico de memoria, cerrando el programa por seguridad");
         exit(-1);
     }
     extraccion_hilos(CPU->inicio,output, CPU->inicio->inicio);
-    puts("Visualizacion de procesos ejecutados");
-    impresion_pila(output->tope);
-    return;
+    //puts("Visualizacion de procesos ejecutados");
+    //impresion_pila(output->tope);
+    return output;
 }
 
 // 01_Recorrer cada hilo hasta llegar a uno NULL

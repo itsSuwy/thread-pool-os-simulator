@@ -69,6 +69,7 @@ int main(void) {
                 struct pila *output = crear_pila(CPU);
                 puts("Visualizacion de los procesos ejecutados");
                 impresion_pila(output->tope);
+                puts("Subiendo a un archivo los procesos");
                 subir_archivo(output->tope);
                 break;
             case 53: // Valor ascii de 5

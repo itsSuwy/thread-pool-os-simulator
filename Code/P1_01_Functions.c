@@ -273,7 +273,7 @@ void impresion_pila(struct process *proceso){
     return impresion_pila(proceso->sig);
 }
 void subir_archivo(struct process *proceso) {
-    FILE *fp = fopen("../logs/log.txt","w");
+    FILE *fp = fopen("../Logs/log.txt","w");
     if (!fp) {
         puts("Error critico de memoria!");
         exit(-1);

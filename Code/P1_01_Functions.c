@@ -51,20 +51,22 @@ struct thread *Crear_Hilos(int hilos) {
     Hilo_Creado->fin=NULL;
     return Hilo_Creado;
 }
-
+// ~~~~ Case 1 ~~~~~
+// 00_Obtener el nombre del proceso
 char *nombre(void) {
     char *name = (char *)calloc(20, sizeof(char));
     if (!name) {
         puts("Error de memoria!");
         exit(-1);
     }else{
-        printf("Ingrese el nombre del dato (20 caracteres): ");
+        printf("Ingrese el nombre del proceso (20 caracteres): ");
             scanf( " %19s", name);
         limpiando_buffer();
         return name;
     }
 }
 
+// 01_Obtener la importancia del proceso
 bool designar_importancia(void){
     char respuesta='\0';
     while (1) {
@@ -170,7 +172,8 @@ struct process *busqueda_proceso_final(struct process *process) {
     }
 }
 
-
+// ~~~~ Caso 2 ~~~~
+// 00_Imprimir los procesos actuales asignados a cada hilo
 void impresion(struct thread *Hilo){
     if (!Hilo) {
         puts("CPU vacia");
@@ -218,7 +221,9 @@ void extraer_proceso(struct process *process) {
 }
 
 // ~~~~ Case 4 ~~~~~
+// Proceso de mobilizacion hacia la pila y dejar vacio cada hilo
 
+// 00_Crear una pila
 void crear_pila(struct cpu *CPU){
     struct pila *output = (struct pila *)calloc(1, sizeof(struct pila));
     if (!output) {
@@ -226,8 +231,12 @@ void crear_pila(struct cpu *CPU){
         exit(-1);
     }
     extraccion_hilos(CPU->inicio,output, CPU->inicio->inicio);
+    puts("Visualizacion de procesos ejecutados");
+
     return;
 }
+
+// 01_Recorrer cada hilo hasta llegar a uno NULL
 void extraccion_hilos(struct thread *hilo, struct pila *output, struct process *proceso) {
     if (!proceso) { // Se llego al fin de los procesos
         if (!hilo->sig) {
@@ -237,8 +246,9 @@ void extraccion_hilos(struct thread *hilo, struct pila *output, struct process *
     }
     push(hilo,output);
     return extraccion_hilos(hilo,output,hilo->inicio);
-
 }
+
+// 02_Extraer los elementos del hilo original
 void push(struct thread *hilo, struct pila *output){
     struct process *aux = hilo->inicio;
     hilo->inicio=hilo->inicio->sig;
@@ -246,6 +256,21 @@ void push(struct thread *hilo, struct pila *output){
     output->tope=aux;
     output->n_elementos++;
     hilo->n_process--;
+}
+
+void impresion_pila(struct process *proceso){
+    if (!proceso) { // Se llego al final
+        return;
+    }
+    printf("ID asignado al proceso: %i\n", proceso->id);
+    printf("Nombre del proceso: %s\n", proceso->name);
+    printf("Direccion de memoria del proceso: %s\n", proceso->mem_addr);
+    if (proceso->urgency == true) {
+        puts("Es un proceso urgente");
+    }else{
+        puts("Proceso carente de urgencia");
+    }
+    return impresion_pila(proceso->sig);
 }
 
 void limpiando_buffer(void) {

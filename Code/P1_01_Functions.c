@@ -239,6 +239,7 @@ struct pila *crear_pila(struct cpu *CPU){
 // 01_Recorrer cada hilo hasta llegar a uno NULL
 void extraccion_hilos(struct thread *hilo, struct pila *output, struct process *proceso) {
     if (!proceso) { // Se llego al fin de los procesos
+        actualizar_hilo(hilo);
         if (!hilo->sig) {
             return; // No hay a donde mas acceder
         }
@@ -256,6 +257,12 @@ void push(struct thread *hilo, struct pila *output){
     output->tope=aux;
     output->n_elementos++;
     hilo->n_process--;
+}
+
+void actualizar_hilo(struct thread *hilo) {
+    hilo->inicio=NULL;
+    hilo->fin=NULL;
+    hilo->ocupado=false;
 }
 
 void impresion_pila(struct process *proceso){

@@ -67,6 +67,8 @@ void procesar_archivo(struct process *proceso, FILE *fp);
 void actualizar_hilo(struct thread *hilo);
 void cola_global(struct cpu *CPU, struct process *proceso_nuevo);
 struct process *proceso_final(struct process *proceso_cola);
+void carga_proceso(struct cpu *CPU);
+int repeticion(void);
 
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

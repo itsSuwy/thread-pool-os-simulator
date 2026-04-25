@@ -26,6 +26,7 @@ struct thread { // El hilo que almacenara la cola
 struct cpu { // El cpu que almacena los hilos
     struct thread *inicio; // El primer hilo que entre
     struct thread *fin; // El ultimo hilo en entrar
+    struct stack *pendientes;
 };
 
 struct stack {

@@ -123,6 +123,39 @@ struct process *proceso_final(struct process *proceso_cola){
     }
 }
 
+void carga_proceso(struct cpu *CPU) {
+    char *name = nombre();
+    bool urgencia = designar_importancia();
+    struct process *proceso_fabricado = proceso_empaquetado(name,urgencia);
+    cola_global(CPU,proceso_fabricado);
+    int respuesta = repeticion();
+    if (respuesta==1) {
+        return carga_proceso(CPU);
+    }else {
+        return;
+    }
+}
+
+int repeticion(void) {
+    puts("Desea ingresar otro proceso?[Y/N]");
+    char respuesta='\0';
+    while (1) {
+        scanf(" %c", &respuesta);
+        limpiando_buffer();
+        int entrada_ascii = procesado_de_entrada(respuesta);
+        if (entrada_ascii==89 || entrada_ascii == 121) {
+            printf("\n");
+            return 1;
+        }
+        if (entrada_ascii == 78 || entrada_ascii == 110) {
+            printf("\n");
+            return 0;
+        }else {
+            puts("Entrada no valida!");
+        }
+    }
+}
+
 void asignar_hilo(struct thread *hilo_original, struct thread *hilo_auxiliar, struct process *process) {
     int validacion = busqueda_hilo_libre(hilo_auxiliar,process);
     if (validacion == 1){

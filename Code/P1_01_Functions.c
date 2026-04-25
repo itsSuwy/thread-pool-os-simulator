@@ -103,6 +103,26 @@ struct process *proceso_empaquetado(char *name, bool urgency){
     return proceso;
 }
 
+void cola_global(struct cpu *CPU, struct process *proceso_nuevo){
+    if (!CPU->pendientes->inicio) {
+        CPU->pendientes->inicio=proceso_nuevo;
+        CPU->pendientes->final=proceso_nuevo;
+        return;
+    }
+    struct process *aux = proceso_final(CPU->pendientes->inicio);
+    aux->sig=proceso_nuevo;
+    CPU->pendientes->final=proceso_nuevo;
+    return;
+}
+
+struct process *proceso_final(struct process *proceso_cola){
+    if (!proceso_cola->sig) {
+        return proceso_cola;
+    }else{
+        return proceso_final(proceso_cola->sig);
+    }
+}
+
 void asignar_hilo(struct thread *hilo_original, struct thread *hilo_auxiliar, struct process *process) {
     int validacion = busqueda_hilo_libre(hilo_auxiliar,process);
     if (validacion == 1){

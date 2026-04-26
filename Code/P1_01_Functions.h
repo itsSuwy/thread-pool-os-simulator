@@ -75,4 +75,6 @@ void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo); // WIP
 void liberar_hilos(struct cpu *CPU);
 void liberar_stack(struct cpu *CPU);
 void liberar_memoria_final(struct cpu *CPU);
+int obtener_numero_procesos(struct process *proceso, int valor);
+void reorganizar_valores(struct process *proceso, int valor);
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

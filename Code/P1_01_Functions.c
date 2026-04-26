@@ -93,15 +93,15 @@ bool designar_importancia(void){
 // 02_Crear el proceso
 struct process *proceso_empaquetado(char *name, bool urgency){
     struct process *proceso = (struct process *)calloc(1,sizeof(struct process));
-    proceso->mem_addr=(char*)calloc(20,sizeof(char));
     if (!proceso) {
         puts("Error critico de memoria");
         puts("Cerrando el programa por seguridad");
         exit(-1);
     }
-    proceso->name=name;
-    sprintf(proceso->mem_addr, "%p", (void*)proceso);
-    proceso->urgency=urgency;
+    proceso->mem_addr=(char*)calloc(20,sizeof(char)); // Memoria dinamica para almacenar la direccion del apuntador
+    proceso->name=name; // Nombre del proceso
+    sprintf(proceso->mem_addr, "%p", (void*)proceso); // Escribir la direccion del apuntador en la memoria dinamica previamente asignada
+    proceso->urgency=urgency; // La urgencia definida por el usuario
     return proceso;
 }
 
@@ -162,38 +162,45 @@ void carga_proceso(struct cpu *CPU) {
 }
 
 // FIN DE LA LOGICA PARA GENERAR PROCESOS
+// ~~~~ Case 1 ~~~~~ (Asignar un proceso a los hilos de la CPU)
 
+// 00_Funcion principal para asginar el proceso al hilo asignado
 void acceso_CPU(struct cpu *CPU){
     if (!CPU->pendientes->inicio) { // Fin de los procesos a asginar
         return;
     }
-    struct process *proceso_cabeza = extraer_proceso_inicial(CPU->pendientes);
-    struct thread *hilo_encontrado = extraer_hilo(CPU->inicio, CPU->inicio);
+    struct process *proceso_cabeza = extraer_proceso_inicial(CPU->pendientes); // Extraer el primer hilo
+    struct thread *hilo_encontrado = extraer_hilo(CPU->inicio, CPU->inicio); // Extraer un Hilo disponible
     asignar_Proceso(hilo_encontrado, proceso_cabeza);
     return acceso_CPU(CPU);
 }
 
+// 01_Obtener el primer proceso de la cola general
 struct process *extraer_proceso_inicial(struct stack *pendientes) {
     struct process *aux = pendientes->inicio; // Se saca el proceso inicial
     pendientes->inicio=aux->sig;
     return aux;
 }
 
-struct thread *extraer_hilo(struct thread *Hilo, struct thread *Hilo_respaldo) {
-    if (!Hilo) { // El hilo al que se accede es NULL
-        return Hilo_respaldo;
+// 02_Obtener aquel hilo con la menor cantidad de procesos asignados
+struct thread *extraer_hilo(struct thread *Hilo, struct thread *Hilo_respaldo){
+    if (!Hilo) { // El hilo al que se accede es NULL, ya no hay a donde mas desplazarse
+        return Hilo_respaldo; 
     }
-    if (Hilo->n_process <= Hilo_respaldo->n_process){ // El hilo actual tiene mas procesos que el hilo mas chiquito
+    if (Hilo->n_process <= Hilo_respaldo->n_process){ // El hilo mas chiquito, tiene mas procesos que el hilo actual
         Hilo_respaldo = Hilo;
         return extraer_hilo(Hilo->sig, Hilo_respaldo);
     }
     return extraer_hilo(Hilo->sig, Hilo_respaldo);
 }
 
-void asignar_Proceso(struct thread *Hilo, struct process *proceso) {
+// 03_Asignar el primer proceso de la cola general al hilo obtenido
+void asignar_Proceso(struct thread *Hilo, struct process *proceso){
     if (!Hilo->inicio){ // Hilo vacio
         Hilo->inicio=proceso;
         Hilo->fin=proceso;
+        Hilo->n_process++;
+        Hilo->ocupado=true;
         return;
     }
     if (proceso->urgency==true) {
@@ -204,16 +211,25 @@ void asignar_Proceso(struct thread *Hilo, struct process *proceso) {
     }
 }
 
-void proceso_urgente(struct thread *Hilo, struct process *proceso) {
+// 04_Configuracion en caso de que el proceso sea urgente -> se asigna como primer proceso
+void proceso_urgente(struct thread *Hilo, struct process *proceso){
     struct process *aux = Hilo->inicio; // Extraer el proceso inicial
     Hilo->inicio=proceso;
     proceso->sig=aux;
+    Hilo->n_process++;
+    Hilo->ocupado=true;
 }
-void proceso_comun(struct thread *Hilo, struct process *proceso) {
+
+// 05_Configuracion en caso de que el proceso sea comun -> se asigna a la cola de procesos
+void proceso_comun(struct thread *Hilo, struct process *proceso){
     struct process *aux = Hilo->fin;
     aux->sig=proceso;
     Hilo->fin=proceso;
+    Hilo->n_process++;
+    Hilo->ocupado=true;
 }
+
+// FIN DE LA LOGICA DE ASIGNACION DE PROCESOS
 
 // ~~~~ Caso 2 ~~~~
 // 00_Imprimir los procesos actuales asignados a cada hilo
@@ -229,14 +245,11 @@ void impresion(struct thread *Hilo){
     return impresion(Hilo->sig);
 }
 
-int procesado_de_entrada(char input) {
-    int respuesta=0;
-    respuesta = (int)input;
-    return respuesta;
-}
+// ~~~~ Caso 3 ~~~~
 
+// 00_Observar la cola de procesos actuales asignados a cada hilo
 void visualizar_procesos(struct thread *hilo){
-    if (!hilo) {
+    if (!hilo) { // En caso de que haber llegado al hilo final
         puts("~~~Lista de procesos vacia~~~");
         return;
     }
@@ -246,9 +259,11 @@ void visualizar_procesos(struct thread *hilo){
     visualizar_procesos(hilo->sig);
 
 }
+
+// 01_Historial de procesos asignados al hilo
 void extraer_proceso(struct process *process) {
-    if (!process){
-        printf("\n\n");
+    if (!process){ // Proceso vacio, no hay mas que mostrar
+        printf("\n");
         return;
     }
     printf("No. Proceso: %i\n", process->id);
@@ -268,14 +283,12 @@ void extraer_proceso(struct process *process) {
 
 // 00_Crear una pila
 struct pila *crear_pila(struct cpu *CPU){
-    struct pila *output = (struct pila *)calloc(1, sizeof(struct pila));
+    struct pila *output = (struct pila *)calloc(1, sizeof(struct pila)); // Se crea una pila
     if (!output) {
         puts("Error critico de memoria, cerrando el programa por seguridad");
         exit(-1);
     }
     extraccion_hilos(CPU->inicio,output, CPU->inicio->inicio);
-    //puts("Visualizacion de procesos ejecutados");
-    //impresion_pila(output->tope);
     return output;
 }
 
@@ -302,12 +315,14 @@ void push(struct thread *hilo, struct pila *output){
     hilo->n_process--;
 }
 
+// 03_Funcion para reiniciar los apuntadores y el estado actual del hilo
 void actualizar_hilo(struct thread *hilo) {
     hilo->inicio=NULL;
     hilo->fin=NULL;
     hilo->ocupado=false;
 }
 
+// 04_Mostrar en terminal los procesos asignados a la pila
 void impresion_pila(struct process *proceso){
     if (!proceso) { // Se llego al final
         return;
@@ -322,8 +337,10 @@ void impresion_pila(struct process *proceso){
     }
     return impresion_pila(proceso->sig);
 }
+
+// 05_Preparar el apuntador para subir el historial de procesos a un .txt
 void subir_archivo(struct process *proceso) {
-    FILE *fp = fopen("../Logs/log.txt","w");
+    FILE *fp = fopen("../Logs/log.txt","w"); // Ruta y tipo de escritura
     if (!fp) {
         puts("Error critico de memoria!");
         exit(-1);
@@ -333,6 +350,7 @@ void subir_archivo(struct process *proceso) {
     return;
 }
 
+// 06_Adjuntar la informacion de cada proceso al .txt
 void procesar_archivo(struct process *proceso, FILE *fp) {
     if (!proceso) {
         fprintf(fp,"Todos los procesos han sido anotados con exito\n");
@@ -346,12 +364,19 @@ void procesar_archivo(struct process *proceso, FILE *fp) {
     }else{
         fprintf(fp,"Proceso marcado como no urgente\n");
     }
-    fprintf(fp,"\n\n");
+    fprintf(fp,"\n");
     return procesar_archivo(proceso->sig,fp);
 }
 
+// Funciones auxiliares <- No pertenecen a un caso especifico del flujo, aparecen en multiples partes
 void limpiando_buffer(void) {
     while (getchar() !='\n'){}
+}
+
+int procesado_de_entrada(char input) {
+    int respuesta=0;
+    respuesta = (int)input;
+    return respuesta;
 }
 /* There is a bug ahead!
 void ordenar_CPU(struct cpu *CPU) {

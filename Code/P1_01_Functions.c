@@ -51,7 +51,9 @@ struct thread *Crear_Hilos(int hilos) {
     Hilo_Creado->fin=NULL;
     return Hilo_Creado;
 }
-// ~~~~ Case 1 ~~~~~
+// ~~~~ Case 1 ~~~~~ (
+
+// LOGICA PARA GENERAR PROCESOS
 // 00_Obtener el nombre del proceso
 char *nombre(void) {
     char *name = (char *)calloc(20, sizeof(char));
@@ -88,7 +90,7 @@ bool designar_importancia(void){
         }
     }
 }
-
+// 02_Crear el proceso
 struct process *proceso_empaquetado(char *name, bool urgency){
     struct process *proceso = (struct process *)calloc(1,sizeof(struct process));
     proceso->mem_addr=(char*)calloc(20,sizeof(char));
@@ -103,6 +105,7 @@ struct process *proceso_empaquetado(char *name, bool urgency){
     return proceso;
 }
 
+// 03_Generar una cola de procesos que deben ser asignados a hilos libres
 void cola_global(struct cpu *CPU, struct process *proceso_nuevo){
     if (!CPU->pendientes->inicio) {
         CPU->pendientes->inicio=proceso_nuevo;
@@ -114,7 +117,7 @@ void cola_global(struct cpu *CPU, struct process *proceso_nuevo){
     CPU->pendientes->final=proceso_nuevo;
     return;
 }
-
+// 04_Funcion auxiliar para recorrer la cola de procesos hasta llegar al ultimo
 struct process *proceso_final(struct process *proceso_cola){
     if (!proceso_cola->sig) {
         return proceso_cola;
@@ -123,6 +126,28 @@ struct process *proceso_final(struct process *proceso_cola){
     }
 }
 
+// 05_Funcion auxiliar para determinar si el usuario quiere adjuntar otro proceso
+int repeticion(void) {
+    puts("Desea ingresar otro proceso?[Y/N]");
+    char respuesta='\0';
+    while (1) {
+        scanf(" %c", &respuesta);
+        limpiando_buffer();
+        int entrada_ascii = procesado_de_entrada(respuesta);
+        if (entrada_ascii==89 || entrada_ascii == 121) { // El usuario ingresa Y / y
+            printf("\n");
+            return 1;
+        }
+        if (entrada_ascii == 78 || entrada_ascii == 110) { // El usuario ingresa N / n
+            printf("\n");
+            return 0;
+        }else {
+            puts("Entrada no valida!");
+        }
+    }
+}
+
+// 06_Subir el proceso a la cola de procesos
 void carga_proceso(struct cpu *CPU) {
     char *name = nombre();
     bool urgencia = designar_importancia();
@@ -136,27 +161,45 @@ void carga_proceso(struct cpu *CPU) {
     }
 }
 
-int repeticion(void) {
-    puts("Desea ingresar otro proceso?[Y/N]");
-    char respuesta='\0';
-    while (1) {
-        scanf(" %c", &respuesta);
-        limpiando_buffer();
-        int entrada_ascii = procesado_de_entrada(respuesta);
-        if (entrada_ascii==89 || entrada_ascii == 121) {
-            printf("\n");
-            return 1;
-        }
-        if (entrada_ascii == 78 || entrada_ascii == 110) {
-            printf("\n");
-            return 0;
-        }else {
-            puts("Entrada no valida!");
-        }
+// FIN DE LA LOGICA PARA GENERAR PROCESOS
+
+void acceso_CPU(struct cpu *CPU){
+    if (!CPU->pendientes->inicio) { // Fin de los procesos a asginar
+        return;
     }
+    struct process *proceso_cabeza = extraer_proceso_inicial(CPU->pendientes);
+    struct thread *hilo_encontrado = extraer_hilo(CPU->inicio, CPU->inicio);
 }
 
-void asignar_hilo(struct thread *hilo_original, struct thread *hilo_auxiliar, struct process *process) {
+struct process *extraer_proceso_inicial(struct stack *pendientes) {
+    struct process *aux = pendientes->inicio; // Se saca el proceso inicial
+    pendientes->inicio=aux->sig;
+    return aux;
+}
+
+struct thread *extraer_hilo(struct thread *Hilo, struct thread *Hilo_respaldo) {
+    if (!Hilo) { // El hilo al que se accede es NULL
+        return Hilo_respaldo;
+    }
+    if (Hilo->n_process <= Hilo_respaldo->n_process){ // El hilo actual tiene mas procesos que el hilo mas chiquito
+        Hilo_respaldo = Hilo;
+        return extraer_hilo(Hilo->sig, Hilo_respaldo);
+    }
+    return extraer_hilo(Hilo->sig, Hilo_respaldo);
+}
+
+// Sacar el primero de la cola (Hilos)
+// Actualizar la cola
+// Buscar hilo y extraerlo
+// Asignar proceso al hilo
+// - Si el hilo esta vacio: Asignarlo
+// - Si el hilo esta ocupado pero no es urgente: A la cola
+// - Si el hilo esta ocupado pero es urgente, el nuevo proceso inicial sera urgente
+// Repetir
+
+
+// ~~~~ CASE 1 ~~~~ (Proceso de asignacion de hilos a los procesos)
+/*void asignar_hilo(struct thread *hilo_original, struct thread *hilo_auxiliar, struct process *process) {
     int validacion = busqueda_hilo_libre(hilo_auxiliar,process);
     if (validacion == 1){
         struct thread *hilo_menor = hilo_libre(hilo_original,hilo_original);
@@ -224,6 +267,8 @@ struct process *busqueda_proceso_final(struct process *process) {
         return busqueda_proceso_final(process->sig);
     }
 }
+
+*/
 
 // ~~~~ Caso 2 ~~~~
 // 00_Imprimir los procesos actuales asignados a cada hilo

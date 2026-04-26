@@ -386,12 +386,6 @@ void limpiar_pila(struct pila *pila) {
     }
 }
 
-void limpieza_proceso(struct process *proceso) {
-    free(proceso->name);
-    free(proceso->mem_addr);
-    return;
-}
-
 void ejecutar_procesos(struct cpu *CPU) {
     struct pila *pila_de_procesos = crear_pila(CPU); // Se crea la pila
     if (!pila_de_procesos->tope) { // El tope no tiene elementos
@@ -419,6 +413,49 @@ int procesado_de_entrada(char input) {
     int respuesta=0;
     respuesta = (int)input;
     return respuesta;
+}
+
+void liberar_memoria_final(struct cpu *CPU) {
+    liberar_hilos(CPU);
+    liberar_stack(CPU);
+    free(CPU);
+}
+
+void liberar_hilos(struct cpu *CPU) {
+    if (!CPU->inicio) { // Se llego al final
+        CPU->fin=NULL; // El puntero del final se reinicia apuntando a NULL
+        return;
+    }
+    if (!CPU->inicio->inicio) { // Ya no hay mas procesos: Se recorre al proximo hilo y se libera el actual
+        struct thread *aux = CPU->inicio;
+        CPU->inicio=aux->sig;
+        free(aux);
+        return liberar_hilos(CPU);
+    }
+    struct process *aux = CPU->inicio->inicio; // Se liberan de manera recursiva los procesos asignados actualmente
+    CPU->inicio->inicio=aux->sig;
+    limpieza_proceso(aux);
+    free(aux);
+    return liberar_hilos(CPU);
+}
+
+void liberar_stack(struct cpu *CPU){
+    if (!CPU->pendientes->inicio) { // No hay mas procesos asignados a la cola global
+        CPU->pendientes->final = NULL;
+        free(CPU->pendientes);
+        return;
+    }
+    struct process *aux = CPU->pendientes->inicio;
+    CPU->pendientes->inicio=aux->sig;
+    limpieza_proceso(aux);
+    free(aux);
+    return liberar_stack(CPU);
+}
+
+void limpieza_proceso(struct process *proceso) {
+    free(proceso->name);
+    free(proceso->mem_addr);
+    return;
 }
 /* There is a bug ahead!
 void ordenar_CPU(struct cpu *CPU) {

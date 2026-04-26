@@ -42,6 +42,7 @@ int main(void) {
                 visualizar_procesos(CPU->inicio);
                 break;
             case 52: // Valor ascii de 4
+                printf("\n");
                 ejecutar_procesos(CPU);
                 break;
             case 53: // Valor ascii de 5

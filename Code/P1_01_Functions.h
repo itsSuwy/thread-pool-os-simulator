@@ -65,6 +65,8 @@ void actualizar_hilo(struct thread *hilo);
 void impresion_pila(struct process *proceso); // Recursiva
 void subir_archivo(struct process *proceso);
 void procesar_archivo(struct process *proceso, FILE *fp); // Recursiva
+void limpiar_pila(struct pila *pila); // Recursiva
+void limpieza_proceso(struct process *proceso);
 int procesado_de_entrada(char input);
 void limpiando_buffer(void);
 void ordenar_CPU(struct cpu *CPU); // WIP

@@ -371,6 +371,25 @@ void procesar_archivo(struct process *proceso, FILE *fp) {
     return procesar_archivo(proceso->sig,fp);
 }
 
+void limpiar_pila(struct pila *pila) {
+    if (!pila->tope) {
+        puts("Pila limpiada con exito");
+        return;
+    }else {
+        struct process *proceso_a_eliminar = pila->tope;
+        pila->tope = proceso_a_eliminar->sig;
+        limpieza_proceso(proceso_a_eliminar);
+        free(proceso_a_eliminar);
+        return limpiar_pila(pila);
+    }
+}
+
+void limpieza_proceso(struct process *proceso) {
+    free(proceso->name);
+    free(proceso->mem_addr);
+    return;
+}
+
 // Funciones auxiliares <- No pertenecen a un caso especifico del flujo, aparecen en multiples partes
 void limpiando_buffer(void) {
     while (getchar() !='\n'){}

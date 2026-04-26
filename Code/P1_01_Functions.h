@@ -72,5 +72,7 @@ void limpiando_buffer(void);
 void ejecutar_procesos(struct cpu *CPU);
 void ordenar_CPU(struct cpu *CPU); // WIP
 void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo); // WIP
-
+void liberar_hilos(struct cpu *CPU);
+void liberar_stack(struct cpu *CPU);
+void liberar_memoria_final(struct cpu *CPU);
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

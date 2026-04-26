@@ -182,6 +182,7 @@ void acceso_CPU(struct cpu *CPU){
 struct process *extraer_proceso_inicial(struct stack *pendientes) {
     struct process *aux = pendientes->inicio; // Se saca el proceso inicial
     pendientes->inicio=aux->sig;
+    aux->sig=NULL; // Se tiene que desconectar el sig 
     return aux;
 }
 
@@ -311,7 +312,7 @@ void extraccion_hilos(struct thread *hilo, struct pila *output, struct process *
 // 02_Extraer los elementos del hilo original
 void push(struct thread *hilo, struct pila *output){
     struct process *aux = hilo->inicio;
-    hilo->inicio=hilo->inicio->sig;
+    hilo->inicio=aux->sig;
     aux->sig=output->tope;
     output->tope=aux;
     output->n_elementos++;

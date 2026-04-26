@@ -374,6 +374,7 @@ void procesar_archivo(struct process *proceso, FILE *fp) {
 
 void limpiar_pila(struct pila *pila) {
     if (!pila->tope) {
+        free(pila);
         puts("Pila limpiada con exito");
         return;
     }else {

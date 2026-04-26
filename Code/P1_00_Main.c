@@ -22,6 +22,9 @@
     - El historial (log) debe guardarse en un archivo.
 */
 
+// Tp do:
+// -- Liberar los hilos y la CPU
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -64,14 +67,7 @@ int main(void) {
                 visualizar_procesos(CPU->inicio);
                 break;
             case 52: // Valor ascii de 4
-                struct pila *pila_de_procesos = crear_pila(CPU);
-                puts("Visualizacion delos procesos ejecutados");
-                impresion_pila(pila_de_procesos->tope);
-                puts("Guardando el archivo en un .txt");
-                subir_archivo(pila_de_procesos->tope);
-                puts("Archivo generado con exito!");
-                puts("Limpiando la pila de procesos...");
-                limpiar_pila(pila_de_procesos);
+                ejecutar_procesos(CPU);
                 break;
             case 53: // Valor ascii de 5
                 free(CPU);

@@ -421,7 +421,7 @@ void ejecutar_procesos(struct cpu *CPU) {
         free(pila_de_procesos);
         return;
     }
-    puts("Visualizacion de los procesos ejecutados");
+    puts("Visualizando los procesos ejecutado a ejecutar:\n");
     impresion_pila(pila_de_procesos->tope);
     puts("Guardando el archivo en un .txt");
     subir_archivo(pila_de_procesos->tope);

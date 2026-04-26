@@ -69,6 +69,8 @@ void cola_global(struct cpu *CPU, struct process *proceso_nuevo);
 struct process *proceso_final(struct process *proceso_cola);
 void carga_proceso(struct cpu *CPU);
 int repeticion(void);
-
+void acceso_CPU(struct cpu *CPU);
+struct process *extraer_proceso_inicial(struct stack *pendientes);
+struct thread *extraer_hilo(struct thread *Hilo, struct thread *Hilo_respaldo);
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

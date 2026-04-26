@@ -169,6 +169,8 @@ void acceso_CPU(struct cpu *CPU){
     }
     struct process *proceso_cabeza = extraer_proceso_inicial(CPU->pendientes);
     struct thread *hilo_encontrado = extraer_hilo(CPU->inicio, CPU->inicio);
+
+
 }
 
 struct process *extraer_proceso_inicial(struct stack *pendientes) {
@@ -186,6 +188,31 @@ struct thread *extraer_hilo(struct thread *Hilo, struct thread *Hilo_respaldo) {
         return extraer_hilo(Hilo->sig, Hilo_respaldo);
     }
     return extraer_hilo(Hilo->sig, Hilo_respaldo);
+}
+
+void asignar_Proceso(struct thread *Hilo, struct process *proceso) {
+    if (!Hilo->inicio){ // Hilo vacio
+        Hilo->inicio=proceso;
+        Hilo->fin=proceso;
+        return;
+    }
+    if (proceso->urgency==true) {
+        proceso_urgente(Hilo, proceso);
+        return;
+    }else{
+        proceso_comun(Hilo,proceso);
+    }
+}
+
+void proceso_urgente(struct thread *Hilo, struct process *proceso) {
+    struct process *aux = Hilo->inicio; // Extraer el proceso inicial
+    Hilo->inicio=proceso;
+    proceso->sig=aux;
+}
+void proceso_comun(struct thread *Hilo, struct process *proceso) {
+    struct process *aux = Hilo->fin;
+    aux->sig=proceso;
+    Hilo->fin=proceso;
 }
 
 // Sacar el primero de la cola (Hilos)

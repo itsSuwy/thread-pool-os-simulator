@@ -64,7 +64,7 @@ char *nombre(void) {
         exit(-1);
     }else{
         printf("Ingrese el nombre del proceso (20 caracteres): ");
-            scanf( " %19s", name);
+            scanf( " %19[^\n]", name);
         limpiando_buffer();
         return name;
     }
@@ -216,22 +216,43 @@ void asignar_Proceso(struct thread *Hilo, struct process *proceso){
     }
 }
 
-// 04_Configuracion en caso de que el proceso sea urgente -> se asigna como primer proceso
+// 04_Configuracion en caso de que el proceso sea urgente -> se asigna como primer proceso (SOLO SE APLICA CON UN HILO OCUPADO)
 void proceso_urgente(struct thread *Hilo, struct process *proceso){
     struct process *aux = Hilo->inicio; // Extraer el proceso inicial
     Hilo->inicio=proceso;
     proceso->sig=aux;
     Hilo->n_process++;
     Hilo->ocupado=true;
+    reorganizar_valores(Hilo->inicio, 0);
 }
 
-// 05_Configuracion en caso de que el proceso sea comun -> se asigna a la cola de procesos
+// 05_Configuracion en caso de que el proceso sea comun -> se asigna a la cola de procesos (SOLO SE APLICA CON UN HILO OCUPADO)
 void proceso_comun(struct thread *Hilo, struct process *proceso){
+    int id = obtener_numero_procesos(Hilo->inicio,0);
     struct process *aux = Hilo->fin;
     aux->sig=proceso;
     Hilo->fin=proceso;
     Hilo->n_process++;
     Hilo->ocupado=true;
+    proceso->id=id;
+
+}
+
+int obtener_numero_procesos(struct process *proceso, int valor) {
+    if (!proceso) { // Se llego al final del proceso
+        return valor;
+    }else{
+        return obtener_numero_procesos(proceso->sig,valor+1);
+    }
+}
+
+void reorganizar_valores(struct process *proceso, int valor) { // Se llama cuando el proceso es urgente
+    if (!proceso) { // Se llego al final del proceso
+        return;
+    }else {
+        proceso->id=valor;
+        reorganizar_valores(proceso->sig,valor+1);
+    }
 }
 
 // FIN DE LA LOGICA DE ASIGNACION DE PROCESOS
@@ -259,7 +280,12 @@ void visualizar_procesos(struct thread *hilo){
         return;
     }
     printf("No. de hilo: %i\n", hilo->id);
-    printf("No. de procesos asignados: %i\n\n", hilo->n_process);
+    printf("No. de procesos asignados: %i\n", hilo->n_process);
+    if (hilo->ocupado == true) {
+        puts("El hilo esta ocupado.");
+    }else {
+        puts("El hilo se encuentra desocupado");
+    }
     extraer_proceso(hilo->inicio);
     visualizar_procesos(hilo->sig);
 }
@@ -270,13 +296,13 @@ void extraer_proceso(struct process *process) {
         printf("\n");
         return;
     }
-    printf("No. Proceso: %i\n", process->id);
-    printf("Nombre del proceso: %s\n", process->name);
-    printf("Direccion de memoria del proceso %s\n", process->mem_addr);
+    printf("\tNo. Proceso: %i\n", process->id);
+    printf("\tNombre del proceso: %s\n", process->name);
+    printf("\tDireccion de memoria del proceso %s\n", process->mem_addr);
     if (process->urgency == true) {
-        puts("Es urgente el proceso");
+        puts("\tEs urgente el proceso");
     }else {
-        puts("No es urgente el proceso");
+        puts("\tNo es urgente el proceso");
     }
     printf("\n");
     extraer_proceso(process->sig);
@@ -339,6 +365,7 @@ void impresion_pila(struct process *proceso){
     }else{
         puts("Proceso carente de urgencia");
     }
+    printf("\n");
     return impresion_pila(proceso->sig);
 }
 

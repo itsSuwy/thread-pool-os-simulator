@@ -72,5 +72,8 @@ int repeticion(void);
 void acceso_CPU(struct cpu *CPU);
 struct process *extraer_proceso_inicial(struct stack *pendientes);
 struct thread *extraer_hilo(struct thread *Hilo, struct thread *Hilo_respaldo);
+void asignar_Proceso(struct thread *Hilo, struct process *proceso);
+void proceso_urgente(struct thread *Hilo, struct process *proceso);
+void proceso_comun(struct thread *Hilo, struct process *proceso);
 
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

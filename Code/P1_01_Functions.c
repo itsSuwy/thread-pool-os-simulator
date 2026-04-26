@@ -392,6 +392,24 @@ void limpieza_proceso(struct process *proceso) {
     return;
 }
 
+void ejecutar_procesos(struct cpu *CPU) {
+    struct pila *pila_de_procesos = crear_pila(CPU); // Se crea la pila
+    if (!pila_de_procesos->tope) { // El tope no tiene elementos
+        puts("No hay procesos asignados!");
+        puts("Volviendo al menu principal");
+        free(pila_de_procesos);
+        return;
+    }
+    puts("Visualizacion de los procesos ejecutados");
+    impresion_pila(pila_de_procesos->tope);
+    puts("Guardando el archivo en un .txt");
+    subir_archivo(pila_de_procesos->tope);
+    puts("Archivo generado con exito!");
+    puts("Limpiando la pila de procesos...");
+    limpiar_pila(pila_de_procesos);
+    return;
+}
+
 // Funciones auxiliares <- No pertenecen a un caso especifico del flujo, aparecen en multiples partes
 void limpiando_buffer(void) {
     while (getchar() !='\n'){}

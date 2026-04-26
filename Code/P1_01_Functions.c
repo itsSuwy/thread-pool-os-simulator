@@ -23,6 +23,8 @@ void Crear_CPU(struct cpu *CPU, int hilos) { // Funcion para construir la CPU
         exit(-1);
     }
     if (hilos<0) { // Cuando ya no hay mas hilos que sacar
+        struct stack *cola_global = (struct stack *)calloc(1, sizeof(struct stack));
+        CPU->pendientes=cola_global;
         return;
     }
     struct thread *hilo_generado= Crear_Hilos(hilos); // Se genera un hilo
@@ -90,6 +92,7 @@ bool designar_importancia(void){
         }
     }
 }
+
 // 02_Crear el proceso
 struct process *proceso_empaquetado(char *name, bool urgency){
     struct process *proceso = (struct process *)calloc(1,sizeof(struct process));
@@ -185,7 +188,7 @@ struct process *extraer_proceso_inicial(struct stack *pendientes) {
 // 02_Obtener aquel hilo con la menor cantidad de procesos asignados
 struct thread *extraer_hilo(struct thread *Hilo, struct thread *Hilo_respaldo){
     if (!Hilo) { // El hilo al que se accede es NULL, ya no hay a donde mas desplazarse
-        return Hilo_respaldo; 
+        return Hilo_respaldo;
     }
     if (Hilo->n_process <= Hilo_respaldo->n_process){ // El hilo mas chiquito, tiene mas procesos que el hilo actual
         Hilo_respaldo = Hilo;
@@ -208,6 +211,7 @@ void asignar_Proceso(struct thread *Hilo, struct process *proceso){
         return;
     }else{
         proceso_comun(Hilo,proceso);
+        return;
     }
 }
 
@@ -257,7 +261,6 @@ void visualizar_procesos(struct thread *hilo){
     printf("No. de procesos asignados: %i\n\n", hilo->n_process);
     extraer_proceso(hilo->inicio);
     visualizar_procesos(hilo->sig);
-
 }
 
 // 01_Historial de procesos asignados al hilo

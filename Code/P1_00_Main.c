@@ -52,25 +52,26 @@ int main(void) {
             int entrada_ascii = procesado_de_entrada(opcion);
         switch (entrada_ascii) {
             case 49: // Valor ascii de 1
-                char *name = nombre();
-                bool urgencia = designar_importancia();
-                struct process *paquete = proceso_empaquetado(name,urgencia);
-                asignar_hilo(CPU->inicio, CPU->inicio,paquete);
-                continue;
+                carga_proceso(CPU);
+                acceso_CPU(CPU);
+                break;
             case 50: // Valor ascii de 2
                 printf("\n");
                 impresion(CPU->inicio);
-                continue;
+                break;
             case 51: // Valor ascii de 3
                 printf("\n");
                 visualizar_procesos(CPU->inicio);
                 break;
             case 52: // Valor ascii de 4
-                struct pila *output = crear_pila(CPU);
-                puts("Visualizacion de los procesos ejecutados");
-                impresion_pila(output->tope);
-                puts("Subiendo a un archivo los procesos");
-                subir_archivo(output->tope);
+                struct pila *pila_de_procesos = crear_pila(CPU);
+                puts("Visualizacion delos procesos ejecutados");
+                impresion_pila(pila_de_procesos->tope);
+                puts("Guardando el archivo en un .txt");
+                subir_archivo(pila_de_procesos->tope);
+                puts("Archivo generado con exito!");
+                puts("Limpiando la pila de procesos...");
+                limpiar_pila(pila_de_procesos);
                 break;
             case 53: // Valor ascii de 5
                 free(CPU);

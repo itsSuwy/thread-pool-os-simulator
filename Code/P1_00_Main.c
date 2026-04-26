@@ -70,7 +70,7 @@ int main(void) {
                 ejecutar_procesos(CPU);
                 break;
             case 53: // Valor ascii de 5
-                free(CPU);
+                liberar_memoria_final(CPU);
                 exit(0);
             default:
                 puts("Entrada invalida!");

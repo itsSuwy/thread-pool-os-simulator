@@ -16,8 +16,9 @@ int determinarHilos(void) {
     return hilos;
 }
 
-void Crear_CPU(struct cpu *CPU, int hilos) { // Funcion para construir la CPU
+void Crear_CPU(struct cpu *CPU, int hilos, int contador) { // Funcion para construir la CPU
     hilos--;
+    contador++;
     if (!CPU) {
         puts("Error de memoria\nCerrando el programa por seguridad");
         exit(-1);
@@ -27,7 +28,7 @@ void Crear_CPU(struct cpu *CPU, int hilos) { // Funcion para construir la CPU
         CPU->pendientes=cola_global;
         return;
     }
-    struct thread *hilo_generado= Crear_Hilos(hilos); // Se genera un hilo
+    struct thread *hilo_generado= Crear_Hilos(contador); // Se genera un hilo
     if (CPU->inicio== NULL && CPU->fin==NULL) { // Si apuntan a un NULL (La cola esta vacia)
         CPU->inicio=hilo_generado;
         CPU->fin=hilo_generado;
@@ -36,10 +37,34 @@ void Crear_CPU(struct cpu *CPU, int hilos) { // Funcion para construir la CPU
         CPU->fin=hilo_generado;
         aux->sig=CPU->fin;
     }
-    return Crear_CPU(CPU, hilos);
+    return Crear_CPU(CPU, hilos, contador);
 }
 
-struct thread *Crear_Hilos(int hilos) {
+struct thread *Crear_Hilos(int contador) {
+    struct thread *Hilo_Creado = (struct thread*)calloc(1,sizeof(struct thread));
+    if (!Hilo_Creado) {
+        return NULL;
+    }
+    Hilo_Creado->id=contador;
+    Hilo_Creado->n_process=0;
+    Hilo_Creado->name = asignar_nombre_hilo(); // Se le reserva espacio al apuntador de nombre
+    sprintf(Hilo_Creado->name, "%p", (void*)Hilo_Creado);
+    Hilo_Creado->ocupado=false;
+    Hilo_Creado->sig=NULL;
+    Hilo_Creado->inicio=NULL;
+    Hilo_Creado->fin=NULL;
+    return Hilo_Creado;
+}
+
+char *asignar_nombre_hilo(void) {
+    char *name = (char *)calloc(20,sizeof(char));
+    if (!name) {
+        puts("Error critico de memoria!");
+        exit(-1);
+    }
+    return name;
+}
+/*struct thread *Crear_Hilos(int hilos) {
     struct thread *Hilo_Creado = (struct thread*)calloc(1,sizeof(struct thread));
     if (!Hilo_Creado) {
         return NULL;
@@ -53,6 +78,7 @@ struct thread *Crear_Hilos(int hilos) {
     Hilo_Creado->fin=NULL;
     return Hilo_Creado;
 }
+*/
 // ~~~~ Case 1 ~~~~~ (
 
 // LOGICA PARA GENERAR PROCESOS
@@ -131,7 +157,7 @@ struct process *proceso_final(struct process *proceso_cola){
 
 // 05_Funcion auxiliar para determinar si el usuario quiere adjuntar otro proceso
 int repeticion(void) {
-    puts("Desea ingresar otro proceso?[Y/N]");
+    printf("\nDesea ingresar otro proceso?[Y/N]: ");
     char respuesta='\0';
     while (1) {
         scanf(" %c", &respuesta);
@@ -205,13 +231,16 @@ void asignar_Proceso(struct thread *Hilo, struct process *proceso){
         Hilo->fin=proceso;
         Hilo->n_process++;
         Hilo->ocupado=true;
+        proceso->hilo_correspondiente=Hilo->id;
         return;
     }
     if (proceso->urgency==true) {
         proceso_urgente(Hilo, proceso);
+        proceso->hilo_correspondiente=Hilo->id;
         return;
     }else{
         proceso_comun(Hilo,proceso);
+        proceso->hilo_correspondiente=Hilo->id;
         return;
     }
 }
@@ -299,6 +328,7 @@ void extraer_proceso(struct process *process) {
     printf("\tNo. Proceso: %i\n", process->id);
     printf("\tNombre del proceso: %s\n", process->name);
     printf("\tDireccion de memoria del proceso %s\n", process->mem_addr);
+    printf("\tHilo correspondiente: %i\n", process->hilo_correspondiente);
     if (process->urgency == true) {
         puts("\tEs urgente el proceso");
     }else {
@@ -390,6 +420,7 @@ void procesar_archivo(struct process *proceso, FILE *fp) {
     fprintf(fp,"ID asignado: %i\n", proceso->id);
     fprintf(fp,"Nombre del proceso: %s\n", proceso->name);
     fprintf(fp, "Direccion de memoria asignada: %s\n", proceso->mem_addr);
+    fprintf(fp,"Proceso proveniente del hilo: %i\n", proceso->hilo_correspondiente);
     if (proceso->urgency == true) {
         fprintf(fp,"Proceso marcado como urgente\n");
     }else{
@@ -456,6 +487,7 @@ void liberar_hilos(struct cpu *CPU) {
     if (!CPU->inicio->inicio) { // Ya no hay mas procesos: Se recorre al proximo hilo y se libera el actual
         struct thread *aux = CPU->inicio;
         CPU->inicio=aux->sig;
+        free(aux->name); // Se libera el nombre
         free(aux);
         return liberar_hilos(CPU);
     }

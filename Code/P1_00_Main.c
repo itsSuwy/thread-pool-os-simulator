@@ -15,7 +15,7 @@ int main(void) {
     puts("Escaneando los hilos reales de este equipo...");
         int Hilos_reales = determinarHilos();
     printf("Esta computadora cuenta con %i hilos de trabajo utilizables\n", Hilos_reales);
-        Crear_CPU(CPU,Hilos_reales);
+        Crear_CPU(CPU,Hilos_reales,0);
     puts("CPU simulada creada con exito!");
     while (1) {
         puts("\t\n\n~~~Por favor ingrese una opcion~~~");

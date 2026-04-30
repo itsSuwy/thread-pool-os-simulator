@@ -1,12 +1,11 @@
 //
 // Created by suwy on 4/16/26.
 //
+
 #include <unistd.h>
 #include <stdbool.h>
 #include <ctype.h>
-#include <time.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 
 #include "P1_01_Functions.h"

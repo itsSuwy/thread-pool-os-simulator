@@ -16,13 +16,11 @@ int determinarHilos(void) {
 }
 
 void Crear_CPU(struct cpu *CPU, int hilos, int contador) { // Funcion para construir la CPU
-    hilos--;
-    contador++;
     if (!CPU) {
         puts("Error de memoria\nCerrando el programa por seguridad");
         exit(-1);
     }
-    if (hilos<0) { // Cuando ya no hay mas hilos que sacar
+    if (hilos<=0) { // Cuando ya no hay mas hilos que sacar
         struct stack *cola_global = (struct stack *)calloc(1, sizeof(struct stack));
         CPU->pendientes=cola_global;
         return;
@@ -36,7 +34,7 @@ void Crear_CPU(struct cpu *CPU, int hilos, int contador) { // Funcion para const
         CPU->fin=hilo_generado;
         aux->sig=CPU->fin;
     }
-    return Crear_CPU(CPU, hilos, contador);
+    return Crear_CPU(CPU, hilos-1, contador+1);
 }
 
 struct thread *Crear_Hilos(int contador) {
@@ -171,6 +169,7 @@ int repeticion(void) {
             return 0;
         }else {
             puts("Entrada no valida!");
+            puts("Vuelva a ingresar [Y/N]");
         }
     }
 }
@@ -400,12 +399,14 @@ void impresion_pila(struct process *proceso){
 
 // 05_Preparar el apuntador para subir el historial de procesos a un .txt
 void subir_archivo(struct process *proceso) {
-    FILE *fp = fopen("../Logs/log.txt","w"); // Ruta y tipo de escritura
+    FILE *fp = fopen("../Logs/log.txt","a"); // Ruta y tipo de escritura
     if (!fp) {
         puts("Error critico de memoria!");
         exit(-1);
     }
+    fprintf(fp,"~~~~~ Nueva ejecucion detectada ~~~~~\n");
     procesar_archivo(proceso,fp);
+    fprintf(fp, "~~~~~ Fin de la ejecucucion ~~~~~\n\n");
     fclose(fp);
     return;
 }

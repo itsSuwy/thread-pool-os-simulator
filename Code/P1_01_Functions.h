@@ -7,6 +7,7 @@
 
 struct process { // <- Esto es una cajita, se supone que aqui solo tiene que vivir el proceso que entre
     int id;
+    int hilo_correspondiente;
     char *name;
     char *mem_addr;
     bool urgency;
@@ -17,7 +18,7 @@ struct thread { // El hilo que almacenara la cola
     int id;
     int n_process;
     bool ocupado;
-    char name[20];
+    char *name;
     struct thread *sig;
     struct process *inicio; // El primer proceso
     struct process *fin; // El ultimo proceso
@@ -40,7 +41,7 @@ struct pila {
 };
 
 int determinarHilos(void);
-void Crear_CPU(struct cpu *CPU, int hilos); // Recursiva
+void Crear_CPU(struct cpu *CPU, int hilos, int contador); // Recursiva
 struct thread *Crear_Hilos(int hilos);
 char *nombre(void);
 bool designar_importancia(void);;
@@ -70,11 +71,10 @@ void limpieza_proceso(struct process *proceso);
 int procesado_de_entrada(char input);
 void limpiando_buffer(void);
 void ejecutar_procesos(struct cpu *CPU);
-void ordenar_CPU(struct cpu *CPU); // WIP
-void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo); // WIP
 void liberar_hilos(struct cpu *CPU);
 void liberar_stack(struct cpu *CPU);
 void liberar_memoria_final(struct cpu *CPU);
 int obtener_numero_procesos(struct process *proceso, int valor);
 void reorganizar_valores(struct process *proceso, int valor);
+char *asignar_nombre_hilo(void);
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H

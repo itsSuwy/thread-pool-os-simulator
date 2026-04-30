@@ -516,24 +516,3 @@ void limpieza_proceso(struct process *proceso) {
     free(proceso->mem_addr);
     return;
 }
-/* There is a bug ahead!
-void ordenar_CPU(struct cpu *CPU) {
-    if (!CPU->inicio->sig){
-        CPU->inicio = CPU->fin;
-        CPU->fin = NULL;
-        return;
-    }
-    struct thread *aux = CPU->inicio;
-    CPU->inicio=CPU->inicio->sig;
-    ordenar_CPU(CPU);
-    ordenar_CPU_auxiliar(CPU, aux);
-}
-void ordenar_CPU_auxiliar(struct cpu *CPU, struct thread *hilo) {
-    if (!CPU->inicio->sig) {
-
-        return;
-    }else{
-
-    }
-}
-*/

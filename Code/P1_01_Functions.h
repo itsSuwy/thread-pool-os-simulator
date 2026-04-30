@@ -71,10 +71,10 @@ void limpieza_proceso(struct process *proceso);
 int procesado_de_entrada(char input);
 void limpiando_buffer(void);
 void ejecutar_procesos(struct cpu *CPU);
-void liberar_hilos(struct cpu *CPU);
-void liberar_stack(struct cpu *CPU);
+void liberar_hilos(struct cpu *CPU); // Recursiva
+void liberar_stack(struct cpu *CPU); // Recursiva
 void liberar_memoria_final(struct cpu *CPU);
-int obtener_numero_procesos(struct process *proceso, int valor);
-void reorganizar_valores(struct process *proceso, int valor);
+int obtener_numero_procesos(struct process *proceso, int valor); // Recursiva
+void reorganizar_valores(struct process *proceso, int valor); // Recursiva
 char *asignar_nombre_hilo(void);
 #endif //THREAD_POOL_OS_SIMULATOR_P1_01_FUNCTIONS_H
